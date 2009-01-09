@@ -96,13 +96,16 @@ module VST
     
     protected
       def self.method_missing(method, *args, &block)
+        puts "about to check the string"
         m = method.to_s.match(/^(find_all)_by_(.+)$/i)
         m ||= method.to_s.match(/^(find)_by_(.+)$/i)
+
         return super unless m && args.length == 1
+
         send(m.captures.first.to_sym, args.first, m.captures.last.to_sym)
       end
       
-      def define_search_field(search_term)
+      def self.define_search_field(search_term)
         search_what = case search_what
         when :iso, :iso_code, :code
           :numeric
