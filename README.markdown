@@ -41,14 +41,14 @@ Each of the following return a list of countries with the following information 
   # => same type of info for the 27 European Union countries
 </code></pre>
 
-### find\_by\_*
+### find\_by\_* &amp; find\_all\_by\_*
 
-The VST::Validations::Addresses module also provides find\_by\_* functionality for returning a list of countries that meet certain criteria
+The VST::Validations::Addresses module also provides *find\_by\_\** (for a single country) and *find\_all\_by\_\** (for a list of countries)
 
 <code><pre>
   VST::Validations::Addresses.north_america
   # -- is the same as --
-  VST::Validations::Addresses.find_by_continent('North America')
+  VST::Validations::Addresses.find_all_by_continent('North America')
   
   VST::Validations::Addresses.find_by_iso_code('840')
   # => { :name => 'United States',
