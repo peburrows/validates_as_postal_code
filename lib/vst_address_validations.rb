@@ -50,14 +50,14 @@ module VST
       end
     
       def self.north_america
-        find_by_region('North America')
+        find_all('North America', :region)
       end
       def self.north_america?(cty)
         in_this_region?(cty, :north_america)
       end
 
       def self.eu
-        find_by_region('EU')
+        find_all('EU', :region)
       end
       def self.eu?(cty)
         in_this_region?(cty, :eu)
@@ -73,14 +73,7 @@ module VST
       end
     
       def self.find(term, search_what=:name)
-        search_what = case search_what
-        when :iso, :iso_code, :code
-          :numeric
-        when :abbr, :abbreviation
-          term.length == 2 ? :alpha2 : :alpha3
-        else
-          nil
-        end unless [:name, :numeric, :alpha2, :alpha3].include?(search_what)
+        search_term = define_search_field(search_what)
 
         if search_what.is_a?(Array)
           countries.find{|c|
@@ -95,6 +88,11 @@ module VST
           countries.find{|c| c[search_what] == term}
         end
       end
+      
+      def self.find_all(term, search_what=:name)
+        search_what = define_search_field(search_what)
+        countries.find_all{|c| c[search_what] == term}
+      end
     
     protected
       def self.method_missing(method, *args, &block)
@@ -102,7 +100,19 @@ module VST
         return super unless m && args.length == 1
         find(args.first, m.captures.first.to_sym)
       end
-    
+      
+      def define_search_field(search_term)
+        search_what = case search_what
+        when :iso, :iso_code, :code
+          :numeric
+        when :abbr, :abbreviation
+          term.length == 2 ? :alpha2 : :alpha3
+        else
+          nil
+        end unless [:name, :numeric, :alpha2, :alpha3].include?(search_what)
+        search_term
+      end
+      
       def self.find_collection(terms, field=:name)
         terms = terms.is_a?(Array) ? terms : terms.to_a
         results =[]
