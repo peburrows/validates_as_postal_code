@@ -96,9 +96,10 @@ module VST
     
     protected
       def self.method_missing(method, *args, &block)
-        m = method.to_s.match(/^find_by_(.+)$/i)
+        m = method.to_s.match(/^(find_all)_by_(.+)$/i)
+        m ||= method.to_s.match(/^(find)_by_(.+)$/i)
         return super unless m && args.length == 1
-        find(args.first, m.captures.first.to_sym)
+        send(m.captures.first.to_sym, args.first, m.captures.last.to_sym)
       end
       
       def define_search_field(search_term)
