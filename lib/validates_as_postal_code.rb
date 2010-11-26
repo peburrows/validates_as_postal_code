@@ -39,7 +39,7 @@ module ActiveRecord
             record.errors.add_to_base("A valid country must be provided for #{attr_name.to_s.humanize.downcase} validation.")
           end
 
-          unless value.blank? || (value.to_s =~ configuration[:with])
+          if (value.blank? && !configuration[:allow_nil]) || !(value.to_s =~ configuration[:with])
             record.errors.add(attr_name, configuration[:message])
           end
         end
